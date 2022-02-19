@@ -13,17 +13,21 @@
 
   <style type="text/css">
     svg {
-      border: 1px solid red;
+      border: 0px solid red;
     }
 
     g.bucket rect.border {
       fill: transparent;
-      stroke-width: 3;
+      stroke-width: 4;
       stroke: rgb(0, 0, 0)
     }
 
+    g.bucket rect.water {
+      fill: #d4f1f9;
+    }
+
     g.bucket line.division {
-      stroke-width: 3;
+      stroke-width: 2;
       stroke: rgb(0, 0, 0)
     }
   </style>
@@ -79,12 +83,12 @@
         <div class="container-fluid">
           <div class="mb-3">
             <label for="paramBucketCount" class="form-label">Número de baldes:</label>
-            <input type="number" min="1" max="20" class="form-control" id="paramBucketCount"
+            <input type="number" min="1" max="20" step="1" class="form-control" id="paramBucketCount"
               data-bind="value: paramBucketCount">
           </div>
           <div class="mb-3">
             <label for="paramBucketDivisionCount" class="form-label">Número de divisões por balde:</label>
-            <input type="number" min="1" max="30" class="form-control" id="paramBucketDivisionCount"
+            <input type="number" min="1" max="30" step="1" class="form-control" id="paramBucketDivisionCount"
               data-bind="value: paramBucketDivisionCount">
           </div>
         </div>
@@ -92,38 +96,41 @@
 
       <svg viewBox="0 0 1000 300" preserveAspectRatio="xMinYMin meet">
         <g class="bucket" data-bind="foreach: buckets">
-          <rect data-bind="attr: { x: x, y: y, width: width, height: height }" class="border" />
+          <rect data-bind="attr: { x: water.x, y: water.y, width: water.width, height: water.height }" class="water" />
           <g data-bind="foreach: divisions">
             <line data-bind="attr: { x1: x1, y1: y1, x2: x2, y2: y2 }" class="division" />
           </g>
+          <rect data-bind="attr: { x: x, y: y, width: width, height: height }" class="border" />
         </g>
       </svg>
 
       <br />
       <br />
 
-      <div class="container">
+      <div class="container" style="text-align: center;">
         <div class="row">
           <div class="col">
-            Escreva a sua fracção:
+            Escreva a sua fracção:<br /><br />
           </div>
           <div class="col">
-            Fracção mista:
+            Fracção mista:<br /><br />
           </div>
           <div class="col">
-            Fracção equivalente:
+            Fracção equivalente:<br /><br />
           </div>
         </div>
         <div class="row">
-          <div class="col">
+          <div class="col" style="padding-top: 20px;">
 
-            <table>
+            <table style="margin: auto;">
               <tr>
                 <td rowspan="3">
-                  <input type="number" style="width: 3em; text-align: right" value="1" />
+                  <input type="number" min="0" max="19" step="1" style="width: 3em; text-align: right"
+                    data-bind="value: paramFracIntegerPart" />
                 </td>
                 <td>
-                  <input type="number" style="width: 3em; text-align: right" value="2" />
+                  <input type="number" min="0" max="600" step="1" style="width: 3em; text-align: right"
+                    data-bind="value: paramFracNumerator" />
                 </td>
               </tr>
               <tr>
@@ -136,7 +143,8 @@
               </tr>
               <tr>
                 <td>
-                  <input type="number" style="width: 3em; text-align: right" value="3" />
+                  <input type="number" min="1" max="30" step="1" style="width: 3em; text-align: right"
+                    data-bind="value: paramFracDenominator" />
                 </td>
               </tr>
             </table>
@@ -144,44 +152,21 @@
 
           </div>
           <div class="col">
-            <div style="font-size: xx-large;">$$\sqrt{x^2+1}$$</div>
+            <div style="font-size: xx-large;" data-bind="katexRender: fracMixed"></div>
+            <div style="font-size: xx-large; display: none;" data-bind="text: fracMixed"></div>
           </div>
           <div class="col">
-            <div style="font-size: xx-large;">$$c = \pm\sqrt{a^2 + b^2}$$</div>
+            <div style="font-size: xx-large;" data-bind="katexRender: fracEquivalent"></div>
+            <div style="font-size: xx-large; display: none" data-bind="text: fracEquivalent"></div>
           </div>
         </div>
       </div>
 
       <br />
-      <br />
-
-
-      <div id="mathPad"></div>
-      <p>First name: <strong data-bind="text: firstName">todo</strong></p>
-      <p>Last name: <strong data-bind="text: lastName">todo</strong></p>
-      <p>First name: <input data-bind="value: firstName" /></p>
-      <p>Last name: <input data-bind="value: lastName" /></p>
-      <p>Full name: <strong data-bind="text: fullName"></strong></p>
-      <button data-bind="click: capitalizeLastName">Go caps</button>
 
     </div>
   </main>
   <br />
-
-
-  <script type="text/javascript">
-
-    window.addEventListener("load", function () {
-      let element = document.querySelector('#mathPad');
-
-      katex.render("c = \\pm\\sqrt{a^2 + b^2}", element, {
-        throwOnError: false,
-        displayMode: false
-      });
-    });
-
-
-  </script>
 
   <script type="text/javascript">
     window.addEventListener("load", function () {
@@ -194,24 +179,52 @@
         this.paramBucketDivisionCount = ko.observable("10");
 
 
+        this.paramFracIntegerPart = ko.observable("2");
+        this.paramFracNumerator = ko.observable("3");
+        this.paramFracDenominator = ko.observable("5");
+
         this.buckets = ko.observable([]);
-
-        this.firstName = ko.observable("Bert");
-        this.lastName = ko.observable("Bertington");
-
-        this.fullName = ko.computed(function () {
-          return this.firstName() + " " + this.lastName();
-        }, this);
-
-        this.capitalizeLastName = function () {
-          var currentVal = this.lastName();        // Read the current value
-          this.lastName(currentVal.toUpperCase()); // Write back a modified value
-        };
+        this.fracEquivalent = ko.observable("");
+        this.fracMixed = ko.observable("");
 
         this.redraw = function () {
 
           let bucketCount = parseInt(this.paramBucketCount(), 10);
           let bucketDivisionCount = parseInt(this.paramBucketDivisionCount(), 10);
+          let fracIntegerPart = parseInt(this.paramFracIntegerPart(), 10);
+          let fracNumerator = parseInt(this.paramFracNumerator(), 10);
+          let fracDenominator = parseInt(this.paramFracDenominator(), 10);
+
+          if (isNaN(fracIntegerPart)) fracIntegerPart = 0;
+          if (isNaN(fracNumerator)) fracNumerator = 0;
+          if (isNaN(fracDenominator)) fracDenominator = 1;
+
+          let mixedFracIntegerPart = fracIntegerPart + Math.floor(fracNumerator / fracDenominator);
+          let mixedFracNumerator = fracNumerator % fracDenominator;
+
+
+          if (mixedFracIntegerPart === 0) {
+            if (mixedFracNumerator === 0) {
+              this.fracMixed(`0`);
+            } else {
+              this.fracMixed(`\\frac{${mixedFracNumerator}}{${fracDenominator}}`);
+            }
+
+          } else {
+            if (mixedFracNumerator === 0) {
+              this.fracMixed(`${mixedFracIntegerPart}`);
+            } else {
+              this.fracMixed(`${mixedFracIntegerPart} \\frac{${mixedFracNumerator}}{${fracDenominator}}`);
+            }
+          }
+
+          if ((fracIntegerPart * fracDenominator) + fracNumerator === 0) {
+            this.fracEquivalent(`0`);
+          } else {
+            this.fracEquivalent(`\\frac{${(fracIntegerPart * fracDenominator) + fracNumerator}}{${fracDenominator}}`);
+          }
+
+          let value = fracIntegerPart + fracNumerator / fracDenominator;
 
           let svgWidth = 1000.0;
           let svgHeight = 300;
@@ -226,12 +239,20 @@
           let buckets = [];
           for (bi = 0; bi < bucketCount; bi++) {
 
+            let waterHeight = Math.max(Math.min((value - bi), 1), 0) * bucketHeight;
+
             let b = {
               x: spacing * (bi + 1) + (bucketWidth * bi),
               y: spacing,
               width: bucketWidth,
               height: bucketHeight,
               divisions: [],
+              water: {
+                x: spacing * (bi + 1) + (bucketWidth * bi),
+                y: spacing + (bucketHeight - waterHeight),
+                width: bucketWidth,
+                height: waterHeight,
+              }
             };
 
             for (di = 1; di < bucketDivisionCount; di++) {
@@ -260,9 +281,32 @@
 
         this.paramBucketCount.subscribe(this.redraw, this);
         this.paramBucketDivisionCount.subscribe(this.redraw, this);
+        this.paramFracIntegerPart.subscribe(this.redraw, this);
+        this.paramFracNumerator.subscribe(this.redraw, this);
+        this.paramFracDenominator.subscribe(this.redraw, this);
       }
 
       // Activates knockout.js
+
+      ko.bindingHandlers.katexRender = {
+        init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+          // This will be called when the binding is first applied to an element
+          // Set up any initial state, event handlers, etc. here
+        },
+        update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+          // This will be called once when the binding is first applied to an element,
+          // and again whenever any observables/computeds that are accessed change
+          // Update the DOM element based on the supplied values here.
+
+          let equation = ko.unwrap(valueAccessor());
+
+          katex.render(equation, element, {
+            throwOnError: false,
+            displayMode: true
+          });
+        }
+      };
+
       let model = new AppViewModel();
       ko.applyBindings(model);
       model.redraw();
