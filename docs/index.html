@@ -11,9 +11,23 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css"
     integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous">
 
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+  <link rel="manifest" href="favicon/site.webmanifest">
+
   <style type="text/css">
-    div.input-group.input-number-plus-minus button {
+    .input-number-plus-minus button {
       font-family: 'Courier New', Courier, monospace;
+    }
+
+    .input-number-plus-minus button {
+      font-weight: bold;
+      font-size: large;
+      padding: 0 .5rem;
+    }
+
+    div.input-group.input-number-plus-minus button {
       font-weight: bold;
       font-size: x-large;
       padding: 0 .75rem;
@@ -122,49 +136,73 @@
 
       <div class="container" style="text-align: center;">
         <div class="row">
-          <div class="col-6">
+          <div class="col">
             Escreva a sua fracção:<br /><br />
           </div>
-          <div class="col-3">
+          <div class="col">
             Fracção mista:<br /><br />
           </div>
-          <div class="col-3">
+          <div class="col">
             Fracção equivalente:<br /><br />
           </div>
         </div>
         <div class="row">
-          <div class="col-6" style="padding-top: 20px;">
+          <div class="col" style="padding-top: 20px;">
 
             <table style="margin: auto">
               <tr>
                 <td rowspan="3">
-                  <input type="number" min="0" max="19" step="1" style="width: 4em; text-align: right"
-                    data-bind="value: paramFracIntegerPart" />
+                  <div class="input-number-plus-minus" data-bind="using: paramFracIntegerPart">
+                    <div class="mb-2">
+                      <button class="btn btn-outline-secondary btn-sm" type="button"
+                        data-bind="click: valueIncrease">+</button>
+                    </div>
+                    <div>
+                      <input class="form-control form-control-sm" id="paramFracNumerator"
+                        data-bind="value: value, attr: inputAttributes" style="text-align: center">
+                    </div>
+                    <div class="mt-2">
+                      <button class="btn btn-outline-secondary btn-sm" type="button"
+                        data-bind="click: valueDecrease">-</button>
+                    </div>
+                  </div>
                 </td>
                 <td>
-                  <div class="input-group input-number-plus-minus" data-bind="using: paramFracNumerator">
-                    <input class="form-control" id="paramFracNumerator" data-bind="value: value, attr: inputAttributes"
-                      style="width: 4.2em; text-align: right">
-                    <button class="btn btn-outline-secondary" type="button" data-bind="click: valueIncrease">+</button>
-                    <button class="btn btn-outline-secondary" type="button" data-bind="click: valueDecrease">-</button>
+                  <div class="input-number-plus-minus" data-bind="using: paramFracNumerator">
+                    <div class="mb-2">
+                      <button class="btn btn-outline-secondary btn-sm" type="button"
+                        data-bind="click: valueIncrease">+</button>
+                      <button class="btn btn-outline-secondary btn-sm" type="button"
+                        data-bind="click: valueDecrease">-</button>
+                    </div>
+                    <div>
+                      <input class="form-control form-control-sm" id="paramFracNumerator"
+                        data-bind="value: value, attr: inputAttributes" style="text-align: center">
+                    </div>
                   </div>
                 </td>
               </tr>
               <tr>
                 <td>
                   <svg viewBox="0 0 200 50">
-                    <line x1="0" y1="25" x2="90" y2="25" style="stroke-width: 2;
+                    <line x1="0" y1="25" x2="200" y2="25" style="stroke-width: 2;
                     stroke: rgb(0, 0, 0)"></line>
                   </svg>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <div class="input-group input-number-plus-minus" data-bind="using: paramFracDenominator">
-                    <input class="form-control" id="paramFracDenominator"
-                      data-bind="value: value, attr: inputAttributes" style="width: 4em; text-align: right">
-                    <button class="btn btn-outline-secondary" type="button" data-bind="click: valueIncrease">+</button>
-                    <button class="btn btn-outline-secondary" type="button" data-bind="click: valueDecrease">-</button>
+                  <div class="input-number-plus-minus" data-bind="using: paramFracDenominator">
+                    <div>
+                      <input class="form-control form-control-sm" id="paramFracNumerator"
+                        data-bind="value: value, attr: inputAttributes" style="text-align: center">
+                    </div>
+                    <div class="mt-2">
+                      <button class="btn btn-outline-secondary btn-sm" type="button"
+                        data-bind="click: valueIncrease">+</button>
+                      <button class="btn btn-outline-secondary btn-sm" type="button"
+                        data-bind="click: valueDecrease">-</button>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -172,11 +210,11 @@
 
 
           </div>
-          <div class="col-3">
+          <div class="col">
             <div style="font-size: xx-large;" data-bind="katexRender: fracMixed"></div>
             <div style="font-size: xx-large; display: none;" data-bind="text: fracMixed"></div>
           </div>
-          <div class="col-3">
+          <div class="col">
             <div style="font-size: xx-large;" data-bind="katexRender: fracEquivalent"></div>
             <div style="font-size: xx-large; display: none" data-bind="text: fracEquivalent"></div>
           </div>
@@ -190,6 +228,7 @@
   <br />
 
   <script type="text/javascript">
+    "use strict";
     window.addEventListener("load", function () {
 
       function ComponentParameterNumberUpDown(defaultValue, minValue, maxValue, stepValue) {
@@ -229,8 +268,7 @@
         this.paramBucketCount = new ComponentParameterNumberUpDown("4", "1", "20", "1");
         this.paramBucketDivisionCount = new ComponentParameterNumberUpDown("10", "1", "30", "1");
 
-
-        this.paramFracIntegerPart = ko.observable("2");
+        this.paramFracIntegerPart = new ComponentParameterNumberUpDown("2", "0", "19", "1");
         this.paramFracNumerator = new ComponentParameterNumberUpDown("3", "0", "600", "1");
         this.paramFracDenominator = new ComponentParameterNumberUpDown("5", "1", "30", "1");
 
@@ -242,7 +280,7 @@
 
           let bucketCount = parseInt(this.paramBucketCount.value(), 10);
           let bucketDivisionCount = parseInt(this.paramBucketDivisionCount.value(), 10);
-          let fracIntegerPart = parseInt(this.paramFracIntegerPart(), 10);
+          let fracIntegerPart = parseInt(this.paramFracIntegerPart.value(), 10);
           let fracNumerator = parseInt(this.paramFracNumerator.value(), 10);
           let fracDenominator = parseInt(this.paramFracDenominator.value(), 10);
 
@@ -291,7 +329,7 @@
           let bucketDivisions = [];
 
           let buckets = [];
-          for (bi = 0; bi < bucketCount; bi++) {
+          for (let bi = 0; bi < bucketCount; bi++) {
 
             let waterHeight = Math.max(Math.min((value - bi), 1), 0) * bucketHeight;
 
@@ -309,7 +347,7 @@
               }
             };
 
-            for (di = 1; di < bucketDivisionCount; di++) {
+            for (let di = 1; di < bucketDivisionCount; di++) {
               b.divisions.push({
                 x1: spacing * (bi + 1) + (bucketWidth * bi),
                 y1: spacing + (divisionHeight * di),
@@ -335,7 +373,7 @@
 
         this.paramBucketCount.value.subscribe(this.redraw, this);
         this.paramBucketDivisionCount.value.subscribe(this.redraw, this);
-        this.paramFracIntegerPart.subscribe(this.redraw, this);
+        this.paramFracIntegerPart.value.subscribe(this.redraw, this);
         this.paramFracNumerator.value.subscribe(this.redraw, this);
         this.paramFracDenominator.value.subscribe(this.redraw, this);
       }
