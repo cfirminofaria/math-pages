@@ -91,7 +91,7 @@
 
     <div class="container py-4">
 
-      <div class="p-5 mb-4 bg-light rounded-3">
+      <div class="p-5 mb-2 bg-light rounded-3">
         <div class="container-fluid">
           <h1 class="display-5 fw-bold" data-bind="visible: langPT">Matemática</h1>
           <h1 class="display-5 fw-bold" data-bind="visible: langEN">Mathematics</h1>
@@ -100,61 +100,61 @@
       </div>
 
 
-      <div class="p-3 mb-4 rounded-3">
+      <div class="p-1 rounded-3">
         <div class="container-fluid">
           <div class="mb-3">
             <label for="paramBucketCount" class="form-label">Número de baldes:</label>
             <div class="input-group input-number-plus-minus" data-bind="using: paramBucketCount">
               <input class="form-control" id="paramBucketCount" data-bind="value: value, attr: inputAttributes">
-              <button class="btn btn-outline-secondary" type="button" data-bind="click: valueIncrease">+</button>
-              <button class="btn btn-outline-secondary" type="button" data-bind="click: valueDecrease">-</button>
+              <button class="btn btn-outline-primary" type="button" data-bind="click: valueIncrease">+</button>
+              <button class="btn btn-outline-danger" type="button" data-bind="click: valueDecrease">-</button>
             </div>
           </div>
           <div class="mb-3">
             <label for="paramBucketDivisionCount" class="form-label">Número de divisões por balde:</label>
             <div class="input-group input-number-plus-minus" data-bind="using: paramBucketDivisionCount">
               <input class="form-control" id="paramBucketDivisionCount" data-bind="value: value, attr: inputAttributes">
-              <button class="btn btn-outline-secondary" type="button" data-bind="click: valueIncrease">+</button>
-              <button class="btn btn-outline-secondary" type="button" data-bind="click: valueDecrease">-</button>
+              <button class="btn btn-outline-primary" type="button" data-bind="click: valueIncrease">+</button>
+              <button class="btn btn-outline-danger" type="button" data-bind="click: valueDecrease">-</button>
             </div>
           </div>
         </div>
       </div>
 
-      <svg viewBox="0 0 1000 300" preserveAspectRatio="xMinYMin meet">
-        <g class="bucket" data-bind="foreach: buckets">
-          <rect data-bind="attr: { x: water.x, y: water.y, width: water.width, height: water.height }" class="water" />
-          <g data-bind="foreach: divisions">
-            <line data-bind="attr: { x1: x1, y1: y1, x2: x2, y2: y2 }" class="division" />
+      <div class="mb-4">
+        <svg viewBox="0 0 1000 300" preserveAspectRatio="xMinYMin meet">
+          <g class="bucket" data-bind="foreach: buckets">
+            <rect data-bind="attr: { x: water.x, y: water.y, width: water.width, height: water.height }"
+              class="water" />
+            <g data-bind="foreach: divisions">
+              <line data-bind="attr: { x1: x1, y1: y1, x2: x2, y2: y2 }" class="division" />
+            </g>
+            <rect data-bind="attr: { x: x, y: y, width: width, height: height }" class="border" />
           </g>
-          <rect data-bind="attr: { x: x, y: y, width: width, height: height }" class="border" />
-        </g>
-      </svg>
+        </svg>
+      </div>
 
-      <br />
-      <br />
-
-      <div class="container" style="text-align: center;">
+      <div class="mb-4 container" style="text-align: center;">
         <div class="row">
-          <div class="col">
-            Escreva a sua fracção:<br /><br />
+          <div class="col-5">
+            Escreve a tua fracção:<br /><br />
           </div>
-          <div class="col">
+          <div class="col-4">
             Fracção mista:<br /><br />
           </div>
-          <div class="col">
+          <div class="col-3">
             Fracção equivalente:<br /><br />
           </div>
         </div>
         <div class="row">
-          <div class="col" style="padding-top: 20px;">
+          <div class="col-5">
 
             <table style="margin: auto">
               <tr>
                 <td rowspan="3">
                   <div class="input-number-plus-minus" data-bind="using: paramFracIntegerPart">
                     <div class="mb-2">
-                      <button class="btn btn-outline-secondary btn-sm" type="button"
+                      <button class="btn btn-outline-primary btn-sm" type="button"
                         data-bind="click: valueIncrease">+</button>
                     </div>
                     <div>
@@ -162,7 +162,7 @@
                         data-bind="value: value, attr: inputAttributes" style="text-align: center">
                     </div>
                     <div class="mt-2">
-                      <button class="btn btn-outline-secondary btn-sm" type="button"
+                      <button class="btn btn-outline-danger btn-sm" type="button"
                         data-bind="click: valueDecrease">-</button>
                     </div>
                   </div>
@@ -170,9 +170,9 @@
                 <td>
                   <div class="input-number-plus-minus" data-bind="using: paramFracNumerator">
                     <div class="mb-2">
-                      <button class="btn btn-outline-secondary btn-sm" type="button"
+                      <button class="btn btn-outline-primary btn-sm" type="button"
                         data-bind="click: valueIncrease">+</button>
-                      <button class="btn btn-outline-secondary btn-sm" type="button"
+                      <button class="btn btn-outline-danger btn-sm" type="button"
                         data-bind="click: valueDecrease">-</button>
                     </div>
                     <div>
@@ -184,8 +184,8 @@
               </tr>
               <tr>
                 <td>
-                  <svg viewBox="0 0 200 50">
-                    <line x1="0" y1="25" x2="200" y2="25" style="stroke-width: 2;
+                  <svg viewBox="0 0 100 20">
+                    <line x1="0" y1="10" x2="100" y2="10" style="stroke-width: 1;
                     stroke: rgb(0, 0, 0)"></line>
                   </svg>
                 </td>
@@ -198,9 +198,9 @@
                         data-bind="value: value, attr: inputAttributes" style="text-align: center">
                     </div>
                     <div class="mt-2">
-                      <button class="btn btn-outline-secondary btn-sm" type="button"
+                      <button class="btn btn-outline-primary btn-sm" type="button"
                         data-bind="click: valueIncrease">+</button>
-                      <button class="btn btn-outline-secondary btn-sm" type="button"
+                      <button class="btn btn-outline-danger btn-sm" type="button"
                         data-bind="click: valueDecrease">-</button>
                     </div>
                   </div>
@@ -208,24 +208,20 @@
               </tr>
             </table>
 
-
           </div>
-          <div class="col">
+          <div class="col-4">
             <div style="font-size: xx-large;" data-bind="katexRender: fracMixed"></div>
             <div style="font-size: xx-large; display: none;" data-bind="text: fracMixed"></div>
           </div>
-          <div class="col">
+          <div class="col-3">
             <div style="font-size: xx-large;" data-bind="katexRender: fracEquivalent"></div>
             <div style="font-size: xx-large; display: none" data-bind="text: fracEquivalent"></div>
           </div>
         </div>
       </div>
 
-      <br />
-
     </div>
   </main>
-  <br />
 
   <script type="text/javascript">
     "use strict";
