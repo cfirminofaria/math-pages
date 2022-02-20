@@ -12,6 +12,13 @@
     integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous">
 
   <style type="text/css">
+    div.input-group.input-number-plus-minus button {
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: bold;
+      font-size: x-large;
+      padding: 0 .75rem;
+    }
+
     svg {
       border: 0px solid red;
     }
@@ -83,13 +90,19 @@
         <div class="container-fluid">
           <div class="mb-3">
             <label for="paramBucketCount" class="form-label">Número de baldes:</label>
-            <input type="number" min="1" max="20" step="1" class="form-control" id="paramBucketCount"
-              data-bind="value: paramBucketCount">
+            <div class="input-group input-number-plus-minus" data-bind="using: paramBucketCount">
+              <input class="form-control" id="paramBucketCount" data-bind="value: value, attr: inputAttributes">
+              <button class="btn btn-outline-secondary" type="button" data-bind="click: valueIncrease">+</button>
+              <button class="btn btn-outline-secondary" type="button" data-bind="click: valueDecrease">-</button>
+            </div>
           </div>
           <div class="mb-3">
             <label for="paramBucketDivisionCount" class="form-label">Número de divisões por balde:</label>
-            <input type="number" min="1" max="30" step="1" class="form-control" id="paramBucketDivisionCount"
-              data-bind="value: paramBucketDivisionCount">
+            <div class="input-group input-number-plus-minus" data-bind="using: paramBucketDivisionCount">
+              <input class="form-control" id="paramBucketDivisionCount" data-bind="value: value, attr: inputAttributes">
+              <button class="btn btn-outline-secondary" type="button" data-bind="click: valueIncrease">+</button>
+              <button class="btn btn-outline-secondary" type="button" data-bind="click: valueDecrease">-</button>
+            </div>
           </div>
         </div>
       </div>
@@ -109,53 +122,61 @@
 
       <div class="container" style="text-align: center;">
         <div class="row">
-          <div class="col">
+          <div class="col-6">
             Escreva a sua fracção:<br /><br />
           </div>
-          <div class="col">
+          <div class="col-3">
             Fracção mista:<br /><br />
           </div>
-          <div class="col">
+          <div class="col-3">
             Fracção equivalente:<br /><br />
           </div>
         </div>
         <div class="row">
-          <div class="col" style="padding-top: 20px;">
+          <div class="col-6" style="padding-top: 20px;">
 
-            <table style="margin: auto;">
+            <table style="margin: auto">
               <tr>
                 <td rowspan="3">
-                  <input type="number" min="0" max="19" step="1" style="width: 3em; text-align: right"
+                  <input type="number" min="0" max="19" step="1" style="width: 4em; text-align: right"
                     data-bind="value: paramFracIntegerPart" />
                 </td>
                 <td>
-                  <input type="number" min="0" max="600" step="1" style="width: 3em; text-align: right"
-                    data-bind="value: paramFracNumerator" />
+                  <div class="input-group input-number-plus-minus" data-bind="using: paramFracNumerator">
+                    <input class="form-control" id="paramFracNumerator" data-bind="value: value, attr: inputAttributes"
+                      style="width: 4.2em; text-align: right">
+                    <button class="btn btn-outline-secondary" type="button" data-bind="click: valueIncrease">+</button>
+                    <button class="btn btn-outline-secondary" type="button" data-bind="click: valueDecrease">-</button>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <td>
                   <svg viewBox="0 0 200 50">
-                    <line x1="0" y1="25" x2="200" y2="25" style="stroke-width: 5;
+                    <line x1="0" y1="25" x2="90" y2="25" style="stroke-width: 2;
                     stroke: rgb(0, 0, 0)"></line>
                   </svg>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <input type="number" min="1" max="30" step="1" style="width: 3em; text-align: right"
-                    data-bind="value: paramFracDenominator" />
+                  <div class="input-group input-number-plus-minus" data-bind="using: paramFracDenominator">
+                    <input class="form-control" id="paramFracDenominator"
+                      data-bind="value: value, attr: inputAttributes" style="width: 4em; text-align: right">
+                    <button class="btn btn-outline-secondary" type="button" data-bind="click: valueIncrease">+</button>
+                    <button class="btn btn-outline-secondary" type="button" data-bind="click: valueDecrease">-</button>
+                  </div>
                 </td>
               </tr>
             </table>
 
 
           </div>
-          <div class="col">
+          <div class="col-3">
             <div style="font-size: xx-large;" data-bind="katexRender: fracMixed"></div>
             <div style="font-size: xx-large; display: none;" data-bind="text: fracMixed"></div>
           </div>
-          <div class="col">
+          <div class="col-3">
             <div style="font-size: xx-large;" data-bind="katexRender: fracEquivalent"></div>
             <div style="font-size: xx-large; display: none" data-bind="text: fracEquivalent"></div>
           </div>
@@ -171,17 +192,47 @@
   <script type="text/javascript">
     window.addEventListener("load", function () {
 
+      function ComponentParameterNumberUpDown(defaultValue, minValue, maxValue, stepValue) {
+        this.value = ko.observable(defaultValue);
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        this.stepValue = stepValue;
+
+        this.inputAttributes = {
+          type: "number",
+          min: this.minValue,
+          max: this.maxValue,
+          step: this.stepValue,
+        };
+
+        this.valueIncrease = function () {
+          let value = parseInt(this.value(), 10);
+          value++;
+          value = Math.max(value, this.minValue);
+          value = Math.min(value, this.maxValue);
+          this.value(value);
+        };
+
+        this.valueDecrease = function () {
+          let value = parseInt(this.value(), 10);
+          value--;
+          value = Math.max(value, this.minValue);
+          value = Math.min(value, this.maxValue);
+          this.value(value);
+        };
+      }
+
       function AppViewModel() {
         this.langPT = ko.observable(true);
         this.langEN = ko.observable(false);
 
-        this.paramBucketCount = ko.observable("4");
-        this.paramBucketDivisionCount = ko.observable("10");
+        this.paramBucketCount = new ComponentParameterNumberUpDown("4", "1", "20", "1");
+        this.paramBucketDivisionCount = new ComponentParameterNumberUpDown("10", "1", "30", "1");
 
 
         this.paramFracIntegerPart = ko.observable("2");
-        this.paramFracNumerator = ko.observable("3");
-        this.paramFracDenominator = ko.observable("5");
+        this.paramFracNumerator = new ComponentParameterNumberUpDown("3", "0", "600", "1");
+        this.paramFracDenominator = new ComponentParameterNumberUpDown("5", "1", "30", "1");
 
         this.buckets = ko.observable([]);
         this.fracEquivalent = ko.observable("");
@@ -189,11 +240,11 @@
 
         this.redraw = function () {
 
-          let bucketCount = parseInt(this.paramBucketCount(), 10);
-          let bucketDivisionCount = parseInt(this.paramBucketDivisionCount(), 10);
+          let bucketCount = parseInt(this.paramBucketCount.value(), 10);
+          let bucketDivisionCount = parseInt(this.paramBucketDivisionCount.value(), 10);
           let fracIntegerPart = parseInt(this.paramFracIntegerPart(), 10);
-          let fracNumerator = parseInt(this.paramFracNumerator(), 10);
-          let fracDenominator = parseInt(this.paramFracDenominator(), 10);
+          let fracNumerator = parseInt(this.paramFracNumerator.value(), 10);
+          let fracDenominator = parseInt(this.paramFracDenominator.value(), 10);
 
           if (isNaN(fracIntegerPart)) fracIntegerPart = 0;
           if (isNaN(fracNumerator)) fracNumerator = 0;
@@ -201,7 +252,6 @@
 
           let mixedFracIntegerPart = fracIntegerPart + Math.floor(fracNumerator / fracDenominator);
           let mixedFracNumerator = fracNumerator % fracDenominator;
-
 
           if (mixedFracIntegerPart === 0) {
             if (mixedFracNumerator === 0) {
@@ -221,7 +271,11 @@
           if ((fracIntegerPart * fracDenominator) + fracNumerator === 0) {
             this.fracEquivalent(`0`);
           } else {
-            this.fracEquivalent(`\\frac{${(fracIntegerPart * fracDenominator) + fracNumerator}}{${fracDenominator}}`);
+            if (fracDenominator === 1) {
+              this.fracEquivalent(`${(fracIntegerPart * fracDenominator) + fracNumerator}`);
+            } else {
+              this.fracEquivalent(`\\frac{${(fracIntegerPart * fracDenominator) + fracNumerator}}{${fracDenominator}}`);
+            }
           }
 
           let value = fracIntegerPart + fracNumerator / fracDenominator;
@@ -279,11 +333,11 @@
           return true;
         };
 
-        this.paramBucketCount.subscribe(this.redraw, this);
-        this.paramBucketDivisionCount.subscribe(this.redraw, this);
+        this.paramBucketCount.value.subscribe(this.redraw, this);
+        this.paramBucketDivisionCount.value.subscribe(this.redraw, this);
         this.paramFracIntegerPart.subscribe(this.redraw, this);
-        this.paramFracNumerator.subscribe(this.redraw, this);
-        this.paramFracDenominator.subscribe(this.redraw, this);
+        this.paramFracNumerator.value.subscribe(this.redraw, this);
+        this.paramFracDenominator.value.subscribe(this.redraw, this);
       }
 
       // Activates knockout.js
